@@ -6,13 +6,14 @@ function ChildComponent() {
   const { useWatch } = Form
   const userName = useWatch('username');
 
-  // See https://ant.design/components/form/#Difference-between-other-data-fetching-method
-  // const { useFormInstance } = Form
-  // const userName = "static"
-  // const form = useFormInstance()
-  // console.log(form.getFieldsValue(true))
 
-  return <div>{userName}</div>
+  // See https://ant.design/components/form/#Difference-between-other-data-fetching-method
+  const { useFormInstance } = Form
+  const form = useFormInstance()
+  const foobar = form.getFieldValue('foobar')
+  // const foobar = useWatch('foobar'); //uncomment this to make test pass
+
+  return (<><p>{userName}</p><p>{foobar}</p></>)
 }
 
 function ComponentUnderTest() {
@@ -24,6 +25,12 @@ function ComponentUnderTest() {
       >
         <Input />
       </Form.Item>
+      <Form.Item
+        label="Foobar"
+        name="foobar"
+      >
+        <Input />
+      </Form.Item>
         <ChildComponent />
     </Form>
     )
@@ -32,10 +39,16 @@ function ComponentUnderTest() {
 test('foobar test', () => {
   render(<ComponentUnderTest />);
 
-  const input = screen.getByRole('textbox', { name: /username/i })
-  user.type(input, 'muahaha')
+  const userNameInput = screen.getByRole('textbox', { name: /username/i })
+  user.type(userNameInput, 'muahaha')
+
+  const foobarInput = screen.getByRole('textbox', { name: /foobar/i })
+  user.type(foobarInput, 'woohoo')
+
 
   const userName = screen.getByText('muahaha')
+  const foobar = screen.getByText('woohoo')
 
   expect(userName).toBeInTheDocument()
+  expect(foobar).toBeInTheDocument()
 });
