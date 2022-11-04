@@ -3,9 +3,14 @@ import user from '@testing-library/user-event'
 import { Form, Input } from 'antd'
 
 function ChildComponent() {
-  const { useFormInstance, useWatch } = Form
-  const form = useFormInstance()
-  const userName = useWatch('username', form);
+  const { useWatch } = Form
+  const userName = useWatch('username');
+
+  // See https://ant.design/components/form/#Difference-between-other-data-fetching-method
+  // const { useFormInstance } = Form
+  // const userName = "static"
+  // const form = useFormInstance()
+  // console.log(form.getFieldsValue(true))
 
   return <div>{userName}</div>
 }
