@@ -5,12 +5,16 @@ import {
   useMutation,
   QueryClient,
   QueryClientProvider,
+  MutationCache,
 } from 'react-query'
 
 export default function App({children}) {
   const [foobar, setFoobar] = useState('unit')
 
   const queryClient = new QueryClient({
+    // mutationCache: new MutationCache({
+    //   onError: () => setFoobar('Global error')
+    // })
     defaultOptions: {
       mutations: { onError: () => setFoobar('Global error')}
     }
