@@ -40,6 +40,27 @@ function Demo({ foobar, setFoobar, buildOverrideOnErrorConfig }) {
   );
 }
 
+function DemoTwo({ foobar, setFoobar, buildOverrideOnErrorConfig }) {
+  const { mutate } = useMutation(
+    () => Promise.reject("Something went wrong."),
+    { ...buildOverrideOnErrorConfig(setFoobar)}
+  );
+
+  const handleClick = async (e) => {
+    try {
+      await mutate.mutateAsync()
+    } catch {
+      setFoobar('Local error')
+    }
+  }
+  return (
+    <>
+      <button aria-label="foobar" onClick={handleClick}>Trigger an error via mutation</button>
+      <div>{foobar}</div>
+    </>
+  );
+}
+
 test('local error', async () => {
   const buildOverrideOnErrorConfig = (setFoobar) => ({ onError: () => setFoobar("Local error")})
 
@@ -80,3 +101,22 @@ test('global error', async () => {
   })
 });
 
+test('local error - async method', async () => {
+  const buildOverrideOnErrorConfig = () => ({ })
+
+  render(
+    <App>
+      {({foobar, setFoobar}) => <DemoTwo foobar={foobar} setFoobar={setFoobar} buildOverrideOnErrorConfig={buildOverrideOnErrorConfig}/>}
+    </App>
+  );
+
+  expect(screen.queryByText('Global error')).not.toBeInTheDocument()
+  expect(screen.queryByText('Local error')).not.toBeInTheDocument()
+  const foobarButton = screen.getByRole('button', { name: /foobar/i })
+  user.click(foobarButton)
+
+  await waitFor(() => {
+    expect(screen.queryByText('Global error')).not.toBeInTheDocument()
+    expect(screen.getByText('Local error')).toBeInTheDocument()
+  })
+});
