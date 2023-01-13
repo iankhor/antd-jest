@@ -1,6 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import user from '@testing-library/user-event'
 import { Form, Input } from 'antd'
+import App from './App'
+
 
 function ChildComponent() {
   const { useWatch } = Form
@@ -52,3 +54,27 @@ test('foobar test', () => {
   expect(userName).toBeInTheDocument()
   expect(foobar).toBeInTheDocument()
 });
+
+test.only("App", async () => {
+
+  render(<App />)
+
+  const dateInput = screen.getByPlaceholderText(/select date/i)
+  user.click(dateInput)
+
+  const lastDay = screen.getByText(/31/i)
+  // console.log(x)
+  user.click(lastDay)
+  expect(screen.getByPlaceholderText(/select date/i)).toHaveValue("31/01/2023")
+
+  const submit = screen.getByRole('button', { name: /submit/i})
+
+  user.click(submit)
+  await waitFor(() => {
+    const writePayload = screen.getByRole('generic', {name: 'write-values'})
+    const readPayload = screen.getByRole('generic', {name: 'read-values'})
+
+    expect(writePayload).toHaveTextContent(/actualPersisted": "2023-01-31/i)
+    // expect(readPayload).toHaveTextContent(/actual": "31\/01\/2023/i)
+  })
+})

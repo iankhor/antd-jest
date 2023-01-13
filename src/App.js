@@ -6,15 +6,7 @@ import DisplayDateValues from './components/DisplayDateValues';
 
 import { DatePicker as AntDDatePicker, Form, Button } from 'antd';
 
-function simulatePGPersist(dateMomentLocalInUTC) {
-  return dateMomentLocalInUTC?.toISOString().split('T', 1)[0]
-}
-
-function to8601(dateMomentLocalInUTC) {
-  return dateMomentLocalInUTC.format(moment.HTML5_FMT.DATE)
-
-  // return dateMomentLocalInUTC.toISOString( true) // this works too
-}
+import{ simulatePGPersist, to8601} from './helpers'
 
 function App() {
   const [payloadForSubmit, setPayloadForSubmit] = useState({})
@@ -23,7 +15,8 @@ function App() {
     const payloadForSubmit = {
       actualSent: date,
       actualPersisted: simulatePGPersist(date),
-      expectedPersisted: to8601(date)
+      // actualPersisted: to8601(date), //uncomment to see test pass
+      expectedPersisted: to8601(date) //here for visual purposes
     }
 
     setPayloadForSubmit(payloadForSubmit)
@@ -49,11 +42,15 @@ function App() {
 
 
     <DisplayDateValues />
-    <h2>Write: For Submit</h2>
-    <pre>{JSON.stringify(payloadForSubmit, null, 2)}</pre>
+    <div aria-label='write-values'>
+      <h2>Write: For Submit</h2>
+      <pre>{JSON.stringify(payloadForSubmit, null, 2)}</pre>
+    </div>
     <br />
-    <h2>Read: For retrieval</h2>
-    <pre>{JSON.stringify(parsedSubmittedPayload, null, 2)}</pre>
+    <div aria-label='read-values'>
+      <h2>Read: For retrieval</h2>
+      <pre>{JSON.stringify(parsedSubmittedPayload, null, 2)}</pre>
+    </div>
 
 
     </Form>
