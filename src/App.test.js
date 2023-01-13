@@ -55,7 +55,7 @@ test('foobar test', () => {
   expect(foobar).toBeInTheDocument()
 });
 
-test.only("App", async () => {
+test("App", async () => {
 
   render(<App />)
 

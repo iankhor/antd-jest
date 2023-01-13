@@ -1,4 +1,6 @@
 import {  Form } from 'antd';
+import moment from 'moment'
+
 
 
 export default function DisplayDateValues() {
@@ -6,7 +8,7 @@ export default function DisplayDateValues() {
   const dateMoment = Form.useWatch ('date', form);
 
   const buildDateDisplays = () => {
-    return JSON.stringify({ "date (moment)": dateMoment }, null, 2)
+    return JSON.stringify({ "date (moment)": dateMoment, "moment utc": moment().utc(),  "currentTime moment.format": moment().format(), }, null, 2)
   }
 
   return(

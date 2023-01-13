@@ -27,6 +27,8 @@ function App() {
 
   const parsedSubmittedPayload = Object.keys(payloadForSubmit).length > 0 ?  { actual: moment(actualPersisted).format('DD/MM/YYYY'), expected: moment(expectedPersisted).format('DD/MM/YYYY') }: {}
 
+  console.log(moment().utc().format())
+
 
   return (
     <Form onFinish={onFinish} initialValues={{dateStringUTC: null}} >
