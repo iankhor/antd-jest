@@ -1,24 +1,41 @@
-import logo from './logo.svg';
 import './App.css';
 
+import { DatePicker, Form, Button , Input } from 'antd';
+
+
 function App() {
+  const [form] = Form.useForm();
+
+  const onChange = (date, dateString) => {
+    console.log(date.toISOString(),dateString)
+    form.setFieldsValue({ dateString: dateString });
+  };
+
+
+   const onFinish = (values) => {
+      console.log('Success:', values);
+    };
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <Form onFinish={onFinish} form={form} initialValues={{dateString: null}}>
+         <Form.Item name="dateString"  hidden>
+          <Input hidden/>
+        </Form.Item>
+        <Form.Item label="date" name="date">
+            <DatePicker onChange={onChange} />
+        </Form.Item>
+
+    <div style={{paddingTop: 300}}>
+    <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
     </div>
+
+
+    </Form>
+
+
   );
 }
 
