@@ -55,26 +55,34 @@ test('foobar test', () => {
   expect(foobar).toBeInTheDocument()
 });
 
-test("App", async () => {
+describe('i love time', () => {
+  beforeAll(() => {
+    jest.useFakeTimers('modern')
+    jest.setSystemTime(new Date('2016-12-31T13:00:51.386Z')) // equivalent to 12am 1/1/2017 AEST
+  })
+  afterAll(() => {
+    jest.useRealTimers()
+  })
 
-  render(<App />)
+  test("App", async () => {
+    render(<App />)
 
-  const dateInput = screen.getByPlaceholderText(/select date/i)
-  user.click(dateInput)
+    const dateInput = screen.getByPlaceholderText(/select date/i)
+    user.click(dateInput)
 
-  const lastDay = screen.getByText(/31/i)
-  // console.log(x)
-  user.click(lastDay)
-  expect(screen.getByPlaceholderText(/select date/i)).toHaveValue("31/01/2023")
+    const lastDayOnDatePicker = screen.getAllByText(/31/i)[1]
+    user.click(lastDayOnDatePicker)
+    expect(screen.getByPlaceholderText(/select date/i)).toHaveValue("31/01/2017")
 
-  const submit = screen.getByRole('button', { name: /submit/i})
+    const submit = screen.getByRole('button', { name: /submit/i})
 
-  user.click(submit)
-  await waitFor(() => {
-    const writePayload = screen.getByRole('generic', {name: 'write-values'})
-    const readPayload = screen.getByRole('generic', {name: 'read-values'})
+    user.click(submit)
+    await waitFor(() => {
+      const writePayload = screen.getByRole('generic', {name: 'write-values'})
+      const readPayload = screen.getByRole('generic', {name: 'read-values'})
 
-    expect(writePayload).toHaveTextContent(/actualPersisted": "2023-01-31/i)
-    // expect(readPayload).toHaveTextContent(/actual": "31\/01\/2023/i)
+      expect(writePayload).toHaveTextContent(/actualPersisted": "2017-01-31/i)
+      expect(readPayload).toHaveTextContent(/actual": "31\/01\/2017/i)
+    })
   })
 })

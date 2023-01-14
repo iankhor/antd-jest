@@ -14,7 +14,7 @@ function App() {
   const onFinish = ({date }) => {
     const payloadForSubmit = {
       actualSent: date,
-      actualPersisted: simulatePGPersist(date),
+      actualPersisted: simulatePGPersist(date), //comment to see test pass
       // actualPersisted: to8601(date), //uncomment to see test pass
       expectedPersisted: to8601(date) //here for visual purposes
     }
@@ -22,13 +22,13 @@ function App() {
     setPayloadForSubmit(payloadForSubmit)
   };
 
-  const actualPersisted = simulatePGPersist(payloadForSubmit?.actualSent)
+  const hasPayloadForSubmit = Object.keys(payloadForSubmit).length > 0
+
+  const actualPersisted = simulatePGPersist(payloadForSubmit?.actualSent) //comment to see test pass
+  // const actualPersisted = hasPayloadForSubmit ? to8601(payloadForSubmit?.actualSent) : "" //uncomment to see test pass
   const expectedPersisted = payloadForSubmit?.expectedPersisted
 
-  const parsedSubmittedPayload = Object.keys(payloadForSubmit).length > 0 ?  { actual: moment(actualPersisted).format('DD/MM/YYYY'), expected: moment(expectedPersisted).format('DD/MM/YYYY') }: {}
-
-  console.log(moment().utc().format())
-
+  const parsedSubmittedPayload = hasPayloadForSubmit ?  { actual: moment(actualPersisted).format('DD/MM/YYYY'), expected: moment(expectedPersisted).format('DD/MM/YYYY') }: {}
 
   return (
     <Form onFinish={onFinish} initialValues={{dateStringUTC: null}} >
